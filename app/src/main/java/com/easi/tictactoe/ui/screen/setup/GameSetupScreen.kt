@@ -1,13 +1,19 @@
 package com.easi.tictactoe.ui.screen.setup
 
 import android.content.Context
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -17,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.easi.tictactoe.R
 import com.easi.tictactoe.components.AnimatedText
+import com.easi.tictactoe.components.GameButton
 import com.easi.tictactoe.model.GameMode
 import com.easi.tictactoe.ui.theme.TictactoeTheme
 import com.easi.tictactoe.viewmodel.GameViewModel
@@ -41,9 +49,28 @@ fun GameSetupScreen(modifier: Modifier, viewModel: GameViewModel = viewModel(), 
 fun SetupBody( modifier: Modifier = Modifier, viewModel: GameViewModel = GameViewModel(), navController: NavController? = null
 ) {
     val context = LocalContext.current
+    var currentStep by remember { mutableStateOf(GameSetupStep.MODE_SELECTION) }
     var modeSelected by remember { mutableStateOf(GameMode.SINGLE) }
 
-    ModeSelectionView(context = context, selectedMode = modeSelected) { modeSelected = it}
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(WindowInsets.navigationBars.asPaddingValues())
+    ) {
+        Crossfade(targetState = currentStep) { step ->
+            when (step) {
+                GameSetupStep.MODE_SELECTION -> {
+                    ModeSelectionView(context = context, selectedMode = modeSelected) { modeSelected = it}
+                }
+
+                GameSetupStep.PLAYER_CONFIGURATION -> {
+                    ///TODO
+                }
+            }
+        }
+    }
+
+//    ModeSelectionView(context = context, selectedMode = modeSelected) { modeSelected = it}
 }
 
 @Composable
@@ -84,11 +111,6 @@ fun ModeSelectionView(context: Context, selectedMode: GameMode, onModeSelected: 
             onModeSelected(selected)
         }
     }
-}
-
-@Composable
-fun GameButton(modifier: Modifier, text: String, content: () -> Unit) {
-
 }
 
 
