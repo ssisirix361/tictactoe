@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Tictactoe</string>
+
+    <!-- GAME SETUP -->
+
+    <string name="game_setup_choose_mode_title">Choisis ton mode de jeu ! </string>
+    <string name="game_setup_choose_single_mode">Solo</string>
+    <string name="game_setup_choose_mutliplayer_mode">Multijoueurs</string>
+    <string name="game_setup_back_button">Retour</string>
+    <string name="game_setup_next_button">Suivant</string>
+
 </resources>
