@@ -1,5 +1,7 @@
 package com.easi.tictactoe.ui.screen.setup
 
+import AudioManager
+import SoundType
 import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,35 +36,34 @@ fun SymbolSelector(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         PlayerSymbol.entries
-            .filter{it != PlayerSymbol.NONE}
+            .filter { it != PlayerSymbol.NONE }
             .forEach { symbol ->
-            val isSelected = selectedSymbol == symbol
+                val isSelected = selectedSymbol == symbol
 
-            Text(
-                text = symbol.display,
-                fontSize = 32.sp,
-                fontFamily = bitCountFamily,
-                fontWeight = FontWeight.Bold,
-                textDecoration = if (isSelected) TextDecoration.Underline else TextDecoration.None,
-                style = TextStyle(
-                    brush = if (isSelected) {
-                        Brush.linearGradient(
-                            colors = BlueGradient
-                        )
-                    } else {
-                        Brush.linearGradient(
-                            colors = listOf(Color.Gray, Color.Gray)
-                        )
-                    }
+                Text(
+                    text = symbol.display,
+                    fontSize = 32.sp,
+                    fontFamily = bitCountFamily,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = if (isSelected) TextDecoration.Underline else TextDecoration.None,
+                    style = TextStyle(
+                        brush = if (isSelected) {
+                            Brush.linearGradient(
+                                colors = BlueGradient
+                            )
+                        } else {
+                            Brush.linearGradient(
+                                colors = listOf(Color.Gray, Color.Gray)
+                            )
+                        }
+                    ),
+                    modifier = Modifier
+                        .clickable {
+                            AudioManager.playSound(context = context, sound = SoundType.CLICK)
+                            onSymbolSelected(symbol)
+                        }
+                        .padding(8.dp)
                 )
-                ,
-                modifier = Modifier
-                    .clickable {
-                        AudioManager.playSound(context = context, sound = SoundType.CLICK)
-                        onSymbolSelected(symbol)
-                    }
-                    .padding(8.dp)
-            )
-        }
+            }
     }
 }

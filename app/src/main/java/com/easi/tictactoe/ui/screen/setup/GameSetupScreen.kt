@@ -55,33 +55,28 @@ enum class GameSetupStep {
 }
 
 @Composable
-fun GameSetupScreen(modifier: Modifier, viewModel: GameViewModel = viewModel(), navController: NavController?) {
+fun GameSetupScreen(modifier: Modifier = Modifier, viewModel: GameViewModel = viewModel(), navController: NavController?) {
     val context = LocalContext.current
-//    BackgroundMusicHelper.init(LocalContext.current)
-//    BackgroundMusicHelper.playLoop()
     AudioManager.initBackgroundMusic(context = context)
     AudioManager.playBackgroundMusic()
+
     SetupBody(modifier = modifier, navController = navController, viewModel = viewModel, context = context)
 }
 
 @Composable
-fun SetupBody(
-    modifier: Modifier = Modifier, viewModel: GameViewModel = GameViewModel(), context: Context, navController: NavController? = null
-) {
+fun SetupBody(modifier: Modifier = Modifier, viewModel: GameViewModel = GameViewModel(), context: Context, navController: NavController? = null) {
     var currentStep by remember { mutableStateOf(GameSetupStep.MODE_SELECTION) }
-    var modeSelected by remember { mutableStateOf(GameMode.SINGLE) }
-
     var gameConfiguration by remember { mutableStateOf(viewModel.getGameConfiguration()) }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(WindowInsets.navigationBars.asPaddingValues())
     ) {
         Crossfade(targetState = currentStep) { step ->
             when (step) {
                 GameSetupStep.MODE_SELECTION -> {
-                    ModeSelectionView(context = context, selectedMode = modeSelected) {
+                    ModeSelectionView(context = context, selectedMode =  gameConfiguration.mode) {
                         gameConfiguration.mode = it
                         currentStep = GameSetupStep.PLAYER_CONFIGURATION
                     }
@@ -109,8 +104,6 @@ fun SetupBody(
             }
         }
     }
-
-//    ModeSelectionView(context = context, selectedMode = modeSelected) { modeSelected = it}
 }
 
 @Composable

@@ -10,3 +10,5 @@ val BlueGradient = listOf(Color(0xFF2C3E50), Color(0xFF4A90E2), Color(0xFF007ACC
 
 val red = Color(0xFFFF6B6B)
 val cyan = Color(0xFF4ECDC4)
+
+val lightGray = Color(0xFFE0E0E0)

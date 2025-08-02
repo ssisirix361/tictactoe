@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Tictactoe" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.TicTacToe" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="windowSplashScreenAnimationDuration">@null</item>
+    </style>
+
+    <style name="Theme.TicTacToe.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FF120C3A</item>
+        <item name="postSplashScreenTheme">@style/Theme.TicTacToe</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
 </resources>
