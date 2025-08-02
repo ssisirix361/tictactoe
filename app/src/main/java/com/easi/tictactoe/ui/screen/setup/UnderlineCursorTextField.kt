@@ -1,5 +1,6 @@
 package com.easi.tictactoe.ui.screen.setup
 
+import AudioManager
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -57,7 +58,7 @@ fun UnderlineCursorTextField(
     BasicTextField(
         value = textFieldValue,
         onValueChange = {
-            ///TODO ADD SOUND
+            AudioManager.playSound(context = context, sound = SoundType.CLICK)
             textFieldValue = it
             onValueChange(it.text)
         },

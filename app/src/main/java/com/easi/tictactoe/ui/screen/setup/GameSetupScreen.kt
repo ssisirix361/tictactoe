@@ -1,5 +1,6 @@
 package com.easi.tictactoe.ui.screen.setup
 
+import AudioManager
 import android.content.Context
 import android.util.Log
 import androidx.compose.animation.Crossfade
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
@@ -56,16 +56,18 @@ enum class GameSetupStep {
 
 @Composable
 fun GameSetupScreen(modifier: Modifier, viewModel: GameViewModel = viewModel(), navController: NavController?) {
-    SetupBody(
-        modifier = modifier, navController = navController, viewModel = viewModel,
-    )
+    val context = LocalContext.current
+//    BackgroundMusicHelper.init(LocalContext.current)
+//    BackgroundMusicHelper.playLoop()
+    AudioManager.initBackgroundMusic(context = context)
+    AudioManager.playBackgroundMusic()
+    SetupBody(modifier = modifier, navController = navController, viewModel = viewModel, context = context)
 }
 
 @Composable
 fun SetupBody(
-    modifier: Modifier = Modifier, viewModel: GameViewModel = GameViewModel(), navController: NavController? = null
+    modifier: Modifier = Modifier, viewModel: GameViewModel = GameViewModel(), context: Context, navController: NavController? = null
 ) {
-    val context = LocalContext.current
     var currentStep by remember { mutableStateOf(GameSetupStep.MODE_SELECTION) }
     var modeSelected by remember { mutableStateOf(GameMode.SINGLE) }
 
@@ -181,14 +183,12 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Blue),
+                        .fillMaxSize(),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
+                            .fillMaxWidth()) {
                         GradientText(
                             modifier = Modifier
                                 .padding(start = 20.dp),
@@ -197,12 +197,13 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
 
                         Row(
                             modifier = Modifier
-                                .width(100.dp)
+                                .weight(1F)
                                 .clickable {
-                                    ///TODO ADD SOUND
+                                    AudioManager.playSound(context = context, sound = SoundType.CLICK)
                                     gameConfiguration.gridSize = GridSize.THREE_X_THREE
                                     onUpdate(gameConfiguration)
-                                }
+                                },
+                            horizontalArrangement = Arrangement.End
                         ) {
                             if (gameConfiguration.gridSize == GridSize.THREE_X_THREE) {
                                 ArrowIcon()
@@ -214,12 +215,13 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
 
                         Row(
                             modifier = Modifier
-                                .width(100.dp)
+                                .weight(1F)
                                 .clickable {
-                                    ///TODO ADD SOUND
+                                    AudioManager.playSound(context = context, sound = SoundType.CLICK)
                                     gameConfiguration.gridSize = GridSize.FOUR_X_FOUR
                                     onUpdate(gameConfiguration)
                                 },
+                            horizontalArrangement = Arrangement.Center
                         ) {
                             if (gameConfiguration.gridSize == GridSize.FOUR_X_FOUR) {
                                 ArrowIcon()
@@ -250,7 +252,7 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
                                     modifier = Modifier
                                         .weight(1f)
                                         .clickable {
-                                            ///TODO ADD SOUND
+                                            AudioManager.playSound(context = context, sound = SoundType.CLICK)
                                             gameConfiguration.level = Level.EASY
                                             onUpdate(gameConfiguration)
                                         },
@@ -268,7 +270,7 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
                                     modifier = Modifier
                                         .weight(1f)
                                         .clickable {
-                                            ///TODO ADD SOUND
+                                            AudioManager.playSound(context = context, sound = SoundType.CLICK)
                                             gameConfiguration.level = Level.DIFFICULT
                                             onUpdate(gameConfiguration)
                                         },
@@ -298,7 +300,9 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
                     )
 
                     SymbolSelector(
-                        modifier = Modifier.fillMaxWidth(), gameConfiguration.firstPlayer.symbol
+                        modifier = Modifier.fillMaxWidth(),
+                        context = context,
+                        selectedSymbol = gameConfiguration.firstPlayer.symbol
                     ) {
                         if (gameConfiguration.firstPlayer.symbol != it) {
                             Log.d("SymbolSelector", "Clicked symbol: $it")
@@ -319,7 +323,9 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
                                 onUpdate(gameConfiguration)
                             }
                         )
-                        SymbolSelector(Modifier.fillMaxWidth(), gameConfiguration.secondPlayer.symbol) {
+                        SymbolSelector(Modifier.fillMaxWidth(),
+                            context= context,
+                            selectedSymbol = gameConfiguration.secondPlayer.symbol) {
                             if (gameConfiguration.secondPlayer.symbol != it) {
                                 gameConfiguration.firstPlayer.symbol = gameConfiguration.secondPlayer.symbol
                                 gameConfiguration.secondPlayer.symbol = it
@@ -362,7 +368,7 @@ fun ArrowIcon() {
 @Composable
 fun SetupPreview() {
     TictactoeTheme {
-        SetupBody()
+        SetupBody(context = LocalContext.current)
     }
 }
 

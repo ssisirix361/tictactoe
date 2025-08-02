@@ -1,5 +1,6 @@
 package com.easi.tictactoe.components
 
+import AudioManager
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,7 +18,7 @@ fun GameButton(
 
     Button(
         onClick = {
-            ///TODO ADD SOUND
+            AudioManager.playSound(context = context, sound = SoundType.CLICK)
             onClick()
         },
         modifier = modifier,

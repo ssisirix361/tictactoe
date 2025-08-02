@@ -59,7 +59,7 @@ fun GameModeSelector(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) {
-                        ///TODO ADD SOUND
+                        AudioManager.playSound(context = context, sound = SoundType.CLICK)
                         onModeSelected(mode)
                     }
                     .padding(vertical = 8.dp)

@@ -1,5 +1,6 @@
 package com.easi.tictactoe.ui.screen.setup
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import com.easi.tictactoe.ui.theme.bitCountFamily
 @Composable
 fun SymbolSelector(
     modifier: Modifier,
+    context: Context,
     selectedSymbol: PlayerSymbol,
     onSymbolSelected: (PlayerSymbol) -> Unit
 ) {
@@ -56,7 +58,7 @@ fun SymbolSelector(
                 ,
                 modifier = Modifier
                     .clickable {
-                        ///TODO ADD SOUND
+                        AudioManager.playSound(context = context, sound = SoundType.CLICK)
                         onSymbolSelected(symbol)
                     }
                     .padding(8.dp)
