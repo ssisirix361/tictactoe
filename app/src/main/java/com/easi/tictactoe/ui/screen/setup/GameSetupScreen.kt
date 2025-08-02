@@ -3,6 +3,7 @@ package com.easi.tictactoe.ui.screen.setup
 import android.content.Context
 import android.util.Log
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,7 +80,7 @@ fun SetupBody(
             when (step) {
                 GameSetupStep.MODE_SELECTION -> {
                     ModeSelectionView(context = context, selectedMode = modeSelected) {
-                        modeSelected = it
+                        gameConfiguration.mode = it
                         currentStep = GameSetupStep.PLAYER_CONFIGURATION
                     }
                 }
@@ -174,18 +176,24 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
             }
             Box(
                 modifier = Modifier
-                    .weight(1.3f)
-                    .fillMaxWidth(),
+                    .weight(1.3f),
                 contentAlignment = Alignment.TopCenter
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Blue),
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        GradientText(text = stringResource(R.string.game_setup_choose_grid_format))
+                        GradientText(
+                            modifier = Modifier
+                                .padding(start = 20.dp),
+                            text = stringResource(R.string.game_setup_choose_grid_format)
+                        )
 
                         Row(
                             modifier = Modifier
@@ -230,7 +238,10 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
                                 .fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(15.dp)
                         ) {
-                            GradientText(text = stringResource(R.string.game_setup_choose_level).uppercase())
+                            GradientText(
+                                modifier = Modifier.padding(start = 20.dp),
+                                text = stringResource(R.string.game_setup_choose_level).uppercase()
+                            )
 
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -277,6 +288,7 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
                     Spacer(modifier = Modifier.height(25.dp))
 
                     PlayerInputField(
+                        modifier = Modifier.padding(start = 20.dp),
                         label = if (gameConfiguration.mode == GameMode.SINGLE) stringResource(R.string.game_setup_choose_player) else stringResource(R.string.game_setup_choose_player_one),
                         playerName = gameConfiguration.firstPlayer.name,
                         onValueChange = {
@@ -299,6 +311,7 @@ fun PlayerConfiguration(context: Context, gameConfiguration: GameConfiguration, 
 
                     if (gameConfiguration.mode == GameMode.MULTI) {
                         PlayerInputField(
+                            modifier = Modifier.padding(start = 20.dp),
                             label = stringResource(R.string.game_setup_choose_player_two),
                             playerName = gameConfiguration.secondPlayer.name,
                             onValueChange = {

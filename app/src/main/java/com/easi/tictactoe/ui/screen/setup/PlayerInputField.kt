@@ -20,13 +20,14 @@ import com.easi.tictactoe.components.GradientText
 
 @Composable
 fun PlayerInputField(
+    modifier: Modifier,
     label: String = stringResource(R.string.game_setup_choose_player_one),
     playerName: String,
     onValueChange: (String) -> Unit
 ) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
