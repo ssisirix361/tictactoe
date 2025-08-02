@@ -38,21 +38,18 @@ fun GameModeSelector(
 ) {
     val gameMode = listOf(GameMode.SINGLE, GameMode.MULTI)
 
-    val alpha by rememberInfiniteTransition(label = "Alpha")
+    val alpha by rememberInfiniteTransition()
         .animateFloat(
             initialValue = 0.3f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
                 animation = tween(500),
                 repeatMode = RepeatMode.Reverse
-            ),
-            label = "BlinkingAlpha"
-        )
+            ))
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
     ) {
         gameMode.forEach { mode ->
             Row(
