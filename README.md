@@ -16,5 +16,5 @@ Un jeu de Tic Tac Toe (morpion) personnalisable avec plusieurs modes de jeu et u
 Clonez ce dépôt sur votre machine :
 
 ```bash
-git clone https://github.com/ton-utilisateur/ton-depot.git
+git clone https://github.com/ssisirix361/tictactoe.git
 
