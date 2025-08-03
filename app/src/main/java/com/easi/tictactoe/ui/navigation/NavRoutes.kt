@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.easi.tictactoe.ui.screen.setup.GameSetupScreen
 import com.easi.tictactoe.viewmodel.GameViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.tictactoe.GameScreen
 
 object NavRoutes {
     const val ROOT = "root_graph"
@@ -36,7 +37,7 @@ fun NavRoutes(navController: NavHostController) {
                 navController.getBackStackEntry("root_graph")
             }
             val viewModel: GameViewModel = viewModel(parentEntry)
-            ///TODO ADD SCREEN
+            GameScreen(viewModel = viewModel, navController = navController)
         }
     }
 }
