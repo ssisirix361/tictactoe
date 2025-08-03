@@ -46,6 +46,7 @@ import com.easi.tictactoe.model.GameConfiguration
 import com.easi.tictactoe.model.GameMode
 import com.easi.tictactoe.model.GridSize
 import com.easi.tictactoe.model.Level
+import com.easi.tictactoe.ui.navigation.NavRoutes
 import com.easi.tictactoe.ui.theme.TictactoeTheme
 import com.easi.tictactoe.viewmodel.GameViewModel
 
@@ -95,6 +96,8 @@ fun SetupBody(modifier: Modifier = Modifier, viewModel: GameViewModel = GameView
                         onUpdate = {
                             gameConfiguration = it
                         }, onNext = {
+                            AudioManager.stopBackgroundMusic()
+                            navController?.navigate(NavRoutes.MATCH_SCREEN)
                             viewModel.setGameConfiguration(gameConfiguration)
                         }, onGoBack = {
                             gameConfiguration = viewModel.getGameConfiguration()

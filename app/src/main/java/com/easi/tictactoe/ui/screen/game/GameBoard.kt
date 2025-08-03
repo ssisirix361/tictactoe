@@ -1,4 +1,4 @@
-package com.easi.tictactoe.ui.screen.TicTacToeBoard
+package com.easi.tictactoe.ui.screen.game
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.easi.tictactoe.model.GridSize
 import com.easi.tictactoe.model.PlayerSymbol
 import com.easi.tictactoe.model.WinDirection
-import com.easi.tictactoe.ui.components.GameCell
 
 
 @Composable
@@ -32,7 +31,7 @@ fun GameBoard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f) // carré
+            .aspectRatio(1f)
             .padding(16.dp)
     ) {
         Column(
@@ -51,8 +50,6 @@ fun GameBoard(
                             playerSymbol = currentBoard[row][col],
                             isWinning = currentWinningCell.contains(Pair(row, col)),
                             winDirection = winDirection,
-                            row = row,
-                            col = col,
                             modifier = Modifier.drawBehind {
                                 val strokeWidth = gridFormat.value.dp.toPx()
                                 val rightX = size.width - strokeWidth / 2

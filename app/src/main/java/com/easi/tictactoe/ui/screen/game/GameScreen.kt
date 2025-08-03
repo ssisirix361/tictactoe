@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,22 +42,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.easi.tictactoe.R
+import com.easi.tictactoe.components.GameButton
+import com.easi.tictactoe.components.GradientText
 import com.easi.tictactoe.model.Player
-import com.easi.tictactoe.ui.components.GameButton
-import com.easi.tictactoe.ui.components.GradientText
 import com.easi.tictactoe.ui.navigation.NavRoutes
-import com.easi.tictactoe.ui.screen.TicTacToeBoard.GameBoard
+import com.easi.tictactoe.ui.screen.game.GameBoard
 import com.easi.tictactoe.viewmodel.GameViewModel
 
 
 @Composable
-fun MatchScreen(
+fun GameScreen(
     modifier: Modifier = Modifier,
     viewModel: GameViewModel = viewModel(),
     navController: NavController?
 ) {
-    val context = LocalContext.current
-
     if (viewModel.getCurrentPlayer().isAI) {
         viewModel.playAIMove()
     }
@@ -71,7 +68,6 @@ fun MatchScreen(
                 bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Header
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,7 +97,6 @@ fun MatchScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             ) {
             Box( modifier= Modifier.padding(20.dp) ) {
-                // Current Player Indicator
                 CurrentPlayerIndicator(
                     currentPlayer = viewModel.getCurrentPlayer(),
                     isGameOver = viewModel.isGameOver(),
@@ -115,7 +110,6 @@ fun MatchScreen(
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                // Contenu centré verticalement ET horizontalement
                 GameBoard(
                     gridFormat = viewModel.getGameConfiguration().gridSize,
                     currentBoard = viewModel.getCurrentBoard(),
@@ -215,6 +209,6 @@ fun CurrentPlayerIndicator(
 fun MatchPreview() {
 
     MaterialTheme {
-        MatchScreen(navController = null)
+        GameScreen(navController = null)
     }
 }
