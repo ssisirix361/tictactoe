@@ -26,7 +26,11 @@ object AppMusicLifecycleHandler : DefaultLifecycleObserver {
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        // App passe en arrière-plan
         AudioManager.pauseBackgroundMusic()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        AudioManager.stopBackgroundMusic()
     }
 }

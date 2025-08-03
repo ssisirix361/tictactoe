@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Tictactoe</string>
 
-    <!-- GAME SETUP -->
+
+    <!-- SETUP -->
 
     <string name="game_setup_choose_mode_title">Choisis ton mode de jeu ! </string>
     <string name="game_setup_choose_single_mode">Solo</string>
@@ -18,5 +19,12 @@
     <string name="game_setup_choose_player_two">Joueur 2 </string>
     <string name="game_setup_back_button">Retour</string>
     <string name="game_setup_next_button">Suivant</string>
+
+
+    <!-- GAME -->
+
+    <string name="match_replay_draw_result">Match nul !</string>
+    <string name="match_replay_button">Rejouer</string>
+    <string name="match_new_game_button">Nouvelle partie</string>
 
 </resources>

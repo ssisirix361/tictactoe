@@ -11,6 +11,7 @@ lifecycleProcess = "2.9.2"
 accompanist = "0.30.1"
 coreSplashScreen = "1.0.1"
 materialVersion = "1.9.0"
+composeVersion = "1.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,6 +29,7 @@ androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-p
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashScreen" }
 material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "composeVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

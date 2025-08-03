@@ -52,5 +52,6 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.core.splashscreen)
     implementation(libs.material)
+    implementation(libs.material.icons.extended)
     debugImplementation(libs.androidx.ui.tooling)
 }
