@@ -38,8 +38,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ secrets.workflow }}
 
       - name: Upload APK to GitHub Release
         uses: actions/upload-release-asset@v1
