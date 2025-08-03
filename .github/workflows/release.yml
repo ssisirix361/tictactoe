@@ -20,11 +20,11 @@ jobs:
 
       - name: Decode keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ./my-release.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > .app/my-release.jks
 
       - name: Create keystore.properties
         run: |
-          echo "storeFile=my-release.jks" > keystore.properties
+          echo "storeFile=app/my-release.jks" > keystore.properties
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
