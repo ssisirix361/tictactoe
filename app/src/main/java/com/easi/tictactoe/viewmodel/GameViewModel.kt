@@ -4,7 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.easi.tictactoe.logic.GameLogic.checkWin
+import com.easi.tictactoe.logic.GameLogic.checkWinner
+import com.easi.tictactoe.logic.GameLogic.findRandomFreeCell
+import com.easi.tictactoe.logic.GameLogic.getComputerBestMove
+import com.easi.tictactoe.logic.GameLogic.getWinningCells
+import com.easi.tictactoe.logic.GameLogic.isBoardFull
 import com.easi.tictactoe.model.GameConfiguration
 import com.easi.tictactoe.model.GameMode
 import com.easi.tictactoe.model.GameState
@@ -14,7 +18,6 @@ import com.easi.tictactoe.model.PlayerSymbol
 import com.easi.tictactoe.model.WinDirection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 
 class GameViewModel : ViewModel() {
@@ -34,7 +37,7 @@ class GameViewModel : ViewModel() {
         }
         val newBoard = List(newConfiguration.gridSize.value) { List(newConfiguration.gridSize.value) { PlayerSymbol.NONE } }
 
-        _state.value = _state.value.copy(gameConfiguration = newConfiguration, currentPlayer = newConfiguration.firstPlayer)
+        _state.value = _state.value.copy(gameConfiguration = newConfiguration, currentPlayer = newConfiguration.firstPlayer, board = newBoard)
     }
 
     fun getCurrentPlayer(): Player {
@@ -44,7 +47,6 @@ class GameViewModel : ViewModel() {
     fun getCurrentBoard(): List<List<PlayerSymbol>> {
         return _state.value.board
     }
-
 
     fun getWinner(): Player? {
         return _state.value.winner
@@ -67,9 +69,13 @@ class GameViewModel : ViewModel() {
                 }
             }
 
-            val winner = checkWinner(newBoard)
+            val (winner, direction) = checkWinner(board = newBoard,
+                firstPlayer = state.value.gameConfiguration.firstPlayer,
+                secondPlayer = state.value.gameConfiguration.secondPlayer,
+                needed = state.value.numberCellToWin)
+
             val winningCells = if (winner != null) {
-                getWinningCells(newBoard)
+                getWinningCells(board = newBoard, numberCellToWin = state.value.numberCellToWin)
             } else emptyList()
 
             _state.value = _state.value.copy(
@@ -78,121 +84,10 @@ class GameViewModel : ViewModel() {
                 winner = winner,
                 isGameOver = winner != null || isBoardFull(newBoard),
                 winningCells = winningCells,
-                winDirection = winDirection()
+                winDirection = direction
             )
         }
     }
-
-    private fun checkWinner(board: List<List<PlayerSymbol>>): Player? {
-        val firstPlayer = _state.value.gameConfiguration.firstPlayer
-        val secondPlayer = _state.value.gameConfiguration.secondPlayer
-
-        val players = listOf(firstPlayer, secondPlayer)
-        val size = board.size
-        val needed = _state.value.numberCellToWin // nombre de symboles nécessaires pour gagner
-
-        for (player in players) {
-
-            // Vérifier les lignes
-            for (row in 0 until size) {
-                for (startCol in 0..size - needed) {
-                    if ((0 until needed).all { offset -> board[row][startCol + offset] == player.symbol }) {
-                        _state.value = _state.value.copy(winDirection = WinDirection.HORIZONTAL)
-                        return player
-                    }
-                }
-            }
-
-            // Vérifier les colonnes
-            for (col in 0 until size) {
-                for (startRow in 0..size - needed) {
-                    if ((0 until needed).all { offset -> board[startRow + offset][col] == player.symbol }) {
-                        _state.value = _state.value.copy(winDirection = WinDirection.VERTICAL)
-                        return player
-                    }
-                }
-            }
-
-            // Vérifier diagonale gauche->droite
-            for (row in 0..size - needed) {
-                for (col in 0..size - needed) {
-                    if ((0 until needed).all { offset -> board[row + offset][col + offset] == player.symbol }) {
-                        _state.value = _state.value.copy(winDirection = WinDirection.DIAGONAL_LEFT)
-                        return player
-                    }
-                }
-            }
-
-            // Vérifier diagonale droite->gauche
-            for (row in 0..size - needed) {
-                for (col in needed - 1 until size) {
-                    if ((0 until needed).all { offset -> board[row + offset][col - offset] == player.symbol }) {
-                        _state.value = _state.value.copy(winDirection = WinDirection.DIAGONAL_RIGHT)
-                        return player
-                    }
-                }
-            }
-        }
-
-        return null
-    }
-
-
-    private fun getWinningCells(board: List<List<PlayerSymbol>>): List<Pair<Int, Int>> {
-        val size = _state.value.gameConfiguration.gridSize.value
-        val needed = _state.value.numberCellToWin
-
-        // Vérifier les lignes
-        for (row in 0 until size) {
-            for (startCol in 0..size - needed) {
-                if ((0 until needed).all { offset ->
-                        board[row][startCol + offset] != PlayerSymbol.NONE &&
-                                board[row][startCol + offset] == board[row][startCol]
-                    }) {
-                    return (0 until needed).map { offset -> Pair(row, startCol + offset) }
-                }
-            }
-        }
-
-        // Vérifier les colonnes
-        for (col in 0 until size) {
-            for (startRow in 0..size - needed) {
-                if ((0 until needed).all { offset ->
-                        board[startRow + offset][col] != PlayerSymbol.NONE &&
-                                board[startRow + offset][col] == board[startRow][col]
-                    }) {
-                    return (0 until needed).map { offset -> Pair(startRow + offset, col) }
-                }
-            }
-        }
-
-        // Vérifier diagonale gauche -> droite
-        for (row in 0..size - needed) {
-            for (col in 0..size - needed) {
-                if ((0 until needed).all { offset ->
-                        board[row + offset][col + offset] != PlayerSymbol.NONE &&
-                                board[row + offset][col + offset] == board[row][col]
-                    }) {
-                    return (0 until needed).map { offset -> Pair(row + offset, col + offset) }
-                }
-            }
-        }
-
-        // Vérifier diagonale droite -> gauche
-        for (row in 0..size - needed) {
-            for (col in needed - 1 until size) {
-                if ((0 until needed).all { offset ->
-                        board[row + offset][col - offset] != PlayerSymbol.NONE &&
-                                board[row + offset][col - offset] == board[row][col]
-                    }) {
-                    return (0 until needed).map { offset -> Pair(row + offset, col - offset) }
-                }
-            }
-        }
-
-        return emptyList()
-    }
-
 
     fun isGameOver(): Boolean {
         return _state.value.isGameOver
@@ -202,76 +97,20 @@ class GameViewModel : ViewModel() {
         return _state.value.winDirection
     }
 
-    private fun isBoardFull(board: List<List<PlayerSymbol>>): Boolean {
-        return board.all { row -> row.all { it != PlayerSymbol.NONE } }
-    }
-
-    private fun findRandomFreeCell(): Pair<Int, Int>? {
-        val freeCells = mutableListOf<Pair<Int, Int>>()
-        val currentBoard = _state.value.board
-        for (rowIndex in currentBoard.indices) {
-            for (colIndex in currentBoard[rowIndex].indices) {
-                if (currentBoard[rowIndex][colIndex] == PlayerSymbol.NONE) {
-                    freeCells.add(Pair(rowIndex, colIndex))
-                }
-            }
-        }
-        return if (freeCells.isNotEmpty()) {
-            freeCells[Random.nextInt(freeCells.size)]
-        } else null
-    }
-
-    private fun getComputerBestMove(): Pair<Int, Int>? {
-        val current = _state.value
-        val board = _state.value.board
-        val firstPlayer = current.gameConfiguration.firstPlayer
-        val secondPlayer = current.gameConfiguration.secondPlayer
-
-        findBestMove(firstPlayer.symbol)?.let { return it }
-
-        // 2️⃣ Sinon, bloque un coup gagnant du joueur
-        findBestMove(secondPlayer.symbol)?.let { return it }
-
-        // 3️⃣ Sinon, joue aléatoirement ou sur le centre
-        val center = Pair(1, 1)
-        if (board[1][1] == PlayerSymbol.NONE) return center
-
-        val emptyCells = board.flatMapIndexed { row, rowList ->
-            rowList.mapIndexedNotNull { col, cell ->
-                if (cell == PlayerSymbol.NONE) Pair(row, col) else null
-            }
-        }
-        return emptyCells.randomOrNull()
-    }
-
-    private fun findBestMove(symbol: PlayerSymbol): Pair<Int, Int>? {
-        val board = _state.value.board
-        val size = board.size
-        val needed = 3
-
-        for (row in 0 until size) {
-            for (col in 0 until size) {
-                if (board[row][col] == PlayerSymbol.NONE) {
-                    val testBoard = board.map { it.toMutableList() }
-                    testBoard[row][col] = symbol
-                    if (checkWin(testBoard, symbol, needed)) return Pair(row, col)
-                }
-            }
-        }
-        return null
-    }
-
-
     fun playAIMove() {
         viewModelScope.launch {
             delay(1000L)
 
             if (_state.value.gameConfiguration.level == Level.EASY) {
-                findRandomFreeCell()?.let {
+                findRandomFreeCell(board = state.value.board)?.let {
                     onCellClicked(it.first, it.second)
+
                 }
             } else {
-                getComputerBestMove()?.let {
+                getComputerBestMove(
+                    board = state.value.board, firstPlayer = state.value.gameConfiguration.firstPlayer,
+                    secondPlayer = state.value.gameConfiguration.secondPlayer, numberCellToWin = state.value.numberCellToWin
+                )?.let {
                     onCellClicked(it.first, it.second)
                 }
             }
@@ -287,6 +126,5 @@ class GameViewModel : ViewModel() {
     fun resetAndGoBackToSetup() {
         _state.value = GameState()
     }
-
 
 }
