@@ -81,7 +81,7 @@ private fun DrawScope.drawGrid(
 ) {
     val (offsetX, offsetY) = gridOffset
 
-    // Lignes verticales
+    // Vertical lines
     for (i in 1..2) {
         val x = offsetX + i * cellSize
         drawLine(
@@ -93,7 +93,7 @@ private fun DrawScope.drawGrid(
         )
     }
 
-    // Lignes horizontales
+    // Horizontal lines
     for (i in 1..2) {
         val y = offsetY + i * cellSize
         drawLine(
